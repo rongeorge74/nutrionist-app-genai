@@ -1,17 +1,20 @@
-# Use the official Python image as a parent image
 FROM python:3.9-slim
 
-# Set the working directory in the container
+# Install system dependencies for building packages
+# RUN apt-get update && apt-get install -y \
+#     python3-dev
+
+# Set working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy requirements file first (to cache dependencies in Docker)
+COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 8501 available to the world outside this container
-EXPOSE 8501
+# Copy the rest of the application code
+COPY . .
 
-# Run main.py when the container launches
+# Set the command to run your application
 CMD ["streamlit", "run", "main.py"]

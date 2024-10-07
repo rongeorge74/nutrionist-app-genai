@@ -1,10 +1,5 @@
+python-dotenv
 streamlit
 google-generativeai
-python-dotenv
-langchain
-PyPDF2
-chromadb
-pdf2image
-faiss-cpu
-langchain_google_genai
 Pillow
+requests
