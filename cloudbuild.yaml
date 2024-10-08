@@ -1,0 +1,33 @@
+steps:
+  # Step 1: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      ['build', '-t', 'us-central1-docker.pkg.dev/massive-concept-428309-a4/nutrition-app-docker-image/cloud-run:$COMMIT_SHA', '.']
+  
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      ['push', 'us-central1-docker.pkg.dev/massive-concept-428309-a4/nutrition-app-docker-image/cloud-run:$COMMIT_SHA']
+  
+  # Step 3: Deploy the container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'nutrition-app'  # Replace with your Cloud Run service name
+      - '--image'
+      - 'us-central1-docker.pkg.dev/massive-concept-428309-a4/nutrition-app-docker-image/cloud-run:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'  # Replace with your region
+      
+
+
+
+# Option to log only to Cloud Logging
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# Define images to use
+images:
+  - 'us-central1-docker.pkg.dev/massive-concept-428309-a4/nutrition-app-docker-image/cloud-run:$COMMIT_SHA'
